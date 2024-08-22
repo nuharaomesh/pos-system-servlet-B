@@ -1,5 +1,14 @@
 package lk.ijse.possystemb.persistance;
 
-public interface ItemData {
+import lk.ijse.possystemb.dto.ItemDTO;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+public interface ItemData {
+    List<ItemDTO> getAll(Connection connection) throws SQLException;
+    boolean save(ItemDTO dto, Connection connection);
+    boolean update(ItemDTO dto, Connection connection);
+    boolean delete(String id, Connection connection);
 }
