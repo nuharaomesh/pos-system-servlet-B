@@ -62,6 +62,7 @@ public class CustomerController extends HttpServlet {
                 writer.write("Customer Saved!");
                 resp.setStatus(HttpServletResponse.SC_CREATED);
             } else {
+                log.error("Customer Not Saved!");
                 writer.write("Customer Not Saved!");
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
@@ -75,6 +76,29 @@ public class CustomerController extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        if (!req.getContentType().toLowerCase().startsWith("application/json") || req.getContentType() == null) {
+            resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+        }
+
+        Jsonb jsonb = JsonbBuilder.create();
+        CustomerDTO dto = jsonb.fromJson(req.getReader(), CustomerDTO.class);
+
+        try(var writer = resp.getWriter()) {
+
+            if (dataProcess.update(dto, connection)) {
+
+                log.info("Customer Successfully Updated!");
+                writer.write("Customer Updated!");
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+            } else {
+                log.error("Customer Not Updated!");
+                writer.write("Customer Not Updated!");
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override
