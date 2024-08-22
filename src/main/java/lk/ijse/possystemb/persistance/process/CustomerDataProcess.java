@@ -13,7 +13,7 @@ import java.util.List;
 public class CustomerDataProcess implements CustomerData {
 
     static String SAVE_CUSTOMER = "INSERT INTO Customer (id, name, gender, gmail, phoneNo) VALUES(?, ?, ?, ?, ?)";
-    static String GET_ALL_CUSTOMERS = "SELECT * FROM Csutomer"
+    static String GET_ALL_CUSTOMERS = "SELECT * FROM Csutomer";
 
     @Override
     public List<CustomerDTO> getAll(Connection connection) throws SQLException {
