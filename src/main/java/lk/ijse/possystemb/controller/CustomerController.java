@@ -104,6 +104,22 @@ public class CustomerController extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        try(var writer = resp.getWriter()) {
+            if (dataProcess.delete(req.getParameter("ad"), connection)) {
+
+                log.info("Customer Successfully Deleted!");
+                writer.write("Customer Deleted!");
+                resp.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                log.error("Customer Not Deleted!");
+                writer.write("Customer Not Deleted!");
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+        }
     }
 
     @Override
