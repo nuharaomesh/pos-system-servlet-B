@@ -1,0 +1,6 @@
+<Context>
+    <Resource name="jdbc/posSys" auth="Container" type="javax.sql.DataSource"
+              maxTotal="10" maxIdle="8" maxWaitMillis="-1"
+              username="root" password="@Omesh2002" driverClassName="com.mysql.cj.jdbc.Driver"
+              url="jdbc:mysql://localhost:3306/stuMngJavaEE?createDatabaseIfNotExist=true"/>
+</Context>
