@@ -1,4 +1,19 @@
 package lk.ijse.possystemb.dto;
 
-public class OrderDTO {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.util.Date;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class OrderDTO implements Serializable {
+    private String id;
+    private float price;
+    private Date time;
+    private int qty;
+    private String cusID;
 }
