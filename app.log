@@ -1,0 +1,6 @@
+14:53:12.015 [http-nio-8080-exec-8] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+14:53:12.273 [http-nio-8080-exec-8] ERROR l.i.p.controller.CustomerController -- No value specified for parameter 2
+14:54:32.300 [http-nio-8080-exec-5] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+14:54:32.585 [http-nio-8080-exec-5] ERROR l.i.p.controller.CustomerController -- Table 'stuMngJavaEE.Customer' doesn't exist
+14:55:36.030 [http-nio-8080-exec-7] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+14:55:36.257 [http-nio-8080-exec-7] ERROR l.i.p.controller.CustomerController -- Table 'posSystem.Customer' doesn't exist
