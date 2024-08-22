@@ -14,6 +14,7 @@ public class CustomerDataProcess implements CustomerData {
     static String GET_ALL_CUSTOMERS = "SELECT * FROM Csutomer";
     static String SAVE_CUSTOMER = "INSERT INTO Customer (id, name, gender, gmail, phoneNo) VALUES(?, ?, ?, ?, ?)";
     static String UPDATE_CUSTOMER = "UPDATE Customer SET name = ?, gender = ?, gmail = ?, phoneNo = ? WHERE id = ?";
+    static String DELETE_CUSTOMER = "DELETE FROM Customer WHERE id = ?";
 
     @Override
     public List<CustomerDTO> getAll(Connection connection) throws SQLException {
@@ -63,7 +64,9 @@ public class CustomerDataProcess implements CustomerData {
     }
 
     @Override
-    public boolean delete(String id, Connection connection) {
-        return false;
+    public boolean delete(String id, Connection connection) throws SQLException {
+        var ps = connection.prepareStatement(DELETE_CUSTOMER);
+        ps.setString(1, id);
+        return ps.executeUpdate() > 0;
     }
 }
