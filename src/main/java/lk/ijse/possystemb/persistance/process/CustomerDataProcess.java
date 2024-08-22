@@ -4,7 +4,6 @@ import lk.ijse.possystemb.dto.CustomerDTO;
 import lk.ijse.possystemb.persistance.CustomerData;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,8 +11,9 @@ import java.util.List;
 
 public class CustomerDataProcess implements CustomerData {
 
-    static String SAVE_CUSTOMER = "INSERT INTO Customer (id, name, gender, gmail, phoneNo) VALUES(?, ?, ?, ?, ?)";
     static String GET_ALL_CUSTOMERS = "SELECT * FROM Csutomer";
+    static String SAVE_CUSTOMER = "INSERT INTO Customer (id, name, gender, gmail, phoneNo) VALUES(?, ?, ?, ?, ?)";
+    static String UPDATE_CUSTOMER = "UPDATE Customer SET name = ?, gender = ?, gmail = ?, phoneNo = ? WHERE id = ?";
 
     @Override
     public List<CustomerDTO> getAll(Connection connection) throws SQLException {
@@ -25,10 +25,10 @@ public class CustomerDataProcess implements CustomerData {
         while (resultSet.next()) {
             CustomerDTO dto = new CustomerDTO();
             dto.setId(resultSet.getString("id"));
-            dto.setName(resultSet.getString("id"));
-            dto.setGender(resultSet.getString("id"));
-            dto.setGmail(resultSet.getString("id"));
-            dto.setPhoneNo(resultSet.getInt("id"));
+            dto.setName(resultSet.getString("name"));
+            dto.setGender(resultSet.getString("gender"));
+            dto.setGmail(resultSet.getString("gmail"));
+            dto.setPhoneNo(resultSet.getInt("phoneNo"));
         }
 
         return customerList;
@@ -49,8 +49,17 @@ public class CustomerDataProcess implements CustomerData {
     }
 
     @Override
-    public boolean update(CustomerDTO dto, Connection connection) {
-        return false;
+    public boolean update(CustomerDTO dto, Connection connection) throws SQLException {
+
+        var ps = connection.prepareStatement(UPDATE_CUSTOMER);
+
+        ps.setString(1, dto.getName());
+        ps.setString(2, dto.getGender());
+        ps.setString(3, dto.getGmail());
+        ps.setInt(4, dto.getPhoneNo());
+        ps.setString(5, dto.getId());
+
+        return ps.executeUpdate() > 0;
     }
 
     @Override
