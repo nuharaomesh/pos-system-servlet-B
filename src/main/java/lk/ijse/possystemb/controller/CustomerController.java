@@ -16,8 +16,10 @@ import org.slf4j.LoggerFactory;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 @WebServlet("/customer")
 public class CustomerController extends HttpServlet {
@@ -83,5 +85,19 @@ public class CustomerController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        try(var writer = resp.getWriter()) {
+
+            List<CustomerDTO> dtoList = dataProcess.getAll(connection);
+
+            Jsonb jsonb = JsonbBuilder.create();
+            String customers = jsonb.toJson(dtoList);
+
+            writer.write(customers);
+            log.info("Rendering All Customers");
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
+
 }
