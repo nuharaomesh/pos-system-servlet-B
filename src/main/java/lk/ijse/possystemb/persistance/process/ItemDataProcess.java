@@ -4,7 +4,6 @@ import lk.ijse.possystemb.dto.ItemDTO;
 import lk.ijse.possystemb.persistance.ItemData;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.List;
 public class ItemDataProcess implements ItemData {
 
     static String GET_ALL_ITEMS = "SELECT * FROM Item";
-
+    static String SAVE_ITEM = "INSERT INTO Item (id, itemName, category, price, qty, img) VALUES (?, ?, ?, ?, ?, ?)"
     @Override
     public List<ItemDTO> getAll(Connection connection) throws SQLException {
 
@@ -35,8 +34,18 @@ public class ItemDataProcess implements ItemData {
     }
 
     @Override
-    public boolean save(ItemDTO dto, Connection connection) {
-        return false;
+    public boolean save(ItemDTO dto, Connection connection) throws SQLException {
+
+        var ps = connection.prepareStatement(SAVE_ITEM);
+
+        ps.setString(1, dto.getId());
+        ps.setString(2, dto.getItemName());
+        ps.setString(3, dto.getCategory());
+        ps.setFloat(4, dto.getPrice());
+        ps.setInt(5, dto.getQty());
+        ps.setString(6, dto.getImg());
+
+        return ps.executeUpdate() > 0;
     }
 
     @Override
