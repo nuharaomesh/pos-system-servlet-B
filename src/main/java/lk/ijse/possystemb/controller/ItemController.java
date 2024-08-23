@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -89,7 +90,30 @@ public class ItemController extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
+
+        if (req.getContentType().toLowerCase().startsWith("application/json") || req.getContentType() == null) {
+            resp.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+        }
+
+        Jsonb jsonb = JsonbBuilder.create();
+        ItemDTO dto = jsonb.fromJson(req.getReader(), ItemDTO.class);
+
+        try(var writer = resp.getWriter()) {
+
+            if (dataProcess.update(dto, connection)) {
+
+                log.info("Item Successfully Updated!");
+                writer.write("Item Updated!");
+                resp.setStatus(HttpServletResponse.SC_OK);
+            } else  {
+                log.error("Item Not Updated!");
+                writer.write("Item Not Updated!");
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override
