@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CustomerDataProcess implements CustomerData {
 
-    static String GET_ALL_CUSTOMERS = "SELECT * FROM Csutomer";
+    static String GET_ALL_CUSTOMERS = "SELECT id,name,gender,gmail,phoneNo FROM Customer";
     static String SAVE_CUSTOMER = "INSERT INTO Customer (id, name, gender, gmail, phoneNo) VALUES(?, ?, ?, ?, ?)";
     static String UPDATE_CUSTOMER = "UPDATE Customer SET name = ?, gender = ?, gmail = ?, phoneNo = ? WHERE id = ?";
     static String DELETE_CUSTOMER = "DELETE FROM Customer WHERE id = ?";
@@ -30,6 +30,8 @@ public class CustomerDataProcess implements CustomerData {
             dto.setGender(resultSet.getString("gender"));
             dto.setGmail(resultSet.getString("gmail"));
             dto.setPhoneNo(resultSet.getInt("phoneNo"));
+
+            customerList.add(dto);
         }
 
         return customerList;

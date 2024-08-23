@@ -31,6 +31,8 @@ public class ItemDataProcess implements ItemData {
             dto.setPrice(resultSet.getFloat("price"));
             dto.setQty(resultSet.getInt("qty"));
             dto.setImg(resultSet.getString("img"));
+
+            itemDTOList.add(dto);
         }
 
         return itemDTOList;

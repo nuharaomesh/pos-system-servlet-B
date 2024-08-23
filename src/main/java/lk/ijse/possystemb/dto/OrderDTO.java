@@ -13,7 +13,7 @@ import java.util.Date;
 public class OrderDTO implements Serializable {
     private String id;
     private float price;
-    private Date time;
+    private String time;
     private int qty;
     private String cusID;
 }
