@@ -7,7 +7,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lk.ijse.possystemb.dto.CustomerDTO;
 import lk.ijse.possystemb.dto.ItemDTO;
 import lk.ijse.possystemb.persistance.ItemData;
 import lk.ijse.possystemb.persistance.process.ItemDataProcess;
@@ -17,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -118,6 +116,22 @@ public class ItemController extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
+
+        try(var writer = resp.getWriter()) {
+            if (dataProcess.delete(req.getParameter("id"), connection)) {
+
+                log.info("Item Successfully Deleted!");
+                writer.write("Item Deleted!");
+                resp.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                log.error("Item Not Deleted!");
+                writer.write("Item Not Deleted!");
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+        }
     }
 }
