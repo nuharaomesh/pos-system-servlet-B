@@ -9,6 +9,6 @@ import java.util.List;
 public interface ItemData {
     List<ItemDTO> getAll(Connection connection) throws SQLException;
     boolean save(ItemDTO dto, Connection connection) throws SQLException;
-    boolean update(ItemDTO dto, Connection connection);
+    boolean update(ItemDTO dto, Connection connection) throws SQLException;
     boolean delete(String id, Connection connection);
 }
