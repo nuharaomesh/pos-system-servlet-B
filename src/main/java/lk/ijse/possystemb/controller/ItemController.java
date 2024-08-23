@@ -2,12 +2,12 @@ package lk.ijse.possystemb.controller;
 
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lk.ijse.possystemb.dto.CustomerDTO;
 import lk.ijse.possystemb.dto.ItemDTO;
 import lk.ijse.possystemb.persistance.ItemData;
 import lk.ijse.possystemb.persistance.process.ItemDataProcess;
@@ -61,7 +61,30 @@ public class ItemController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+
+        if (!req.getContentType().toLowerCase().startsWith("application/json") || req.getContentType() == null) {
+            resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+        }
+
+        Jsonb jsonb = JsonbBuilder.create();
+        ItemDTO dto = jsonb.fromJson(req.getReader(), ItemDTO.class);
+
+        try(var writer = resp.getWriter()) {
+
+            if (dataProcess.save(dto, connection)) {
+
+                log.info("Item Successfully Saved!");
+                writer.write("Item Saved!");
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+            } else {
+                log.error("Item Not Saved!");
+                writer.write("Item Not Saved!");
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override
