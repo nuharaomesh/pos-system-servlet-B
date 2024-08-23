@@ -14,6 +14,7 @@ public class ItemDataProcess implements ItemData {
     static String GET_ALL_ITEMS = "SELECT * FROM Item";
     static String SAVE_ITEM = "INSERT INTO Item (id, itemName, category, price, qty, img) VALUES (?, ?, ?, ?, ?, ?)";
     static String UPDATE_ITEM = "UPDATE Item SET itemName = ?, category = ?, price = ?, qty = ?, img = ? WHERE id = ?";
+    static  String DELETE_ITEM = "DELETE FROM Item WHERE id = ?";
 
     @Override
     public List<ItemDTO> getAll(Connection connection) throws SQLException {
@@ -66,7 +67,10 @@ public class ItemDataProcess implements ItemData {
     }
 
     @Override
-    public boolean delete(String id, Connection connection) {
-        return false;
+    public boolean delete(String id, Connection connection) throws SQLException {
+
+        var ps = connection.prepareStatement(DELETE_ITEM);
+        ps.setString(1, id);
+        return ps.executeUpdate() > 0;
     }
 }
