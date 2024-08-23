@@ -20,7 +20,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet("/customer")
+@WebServlet(urlPatterns = "/customer")
 public class CustomerController extends HttpServlet {
 
     private Connection connection;
@@ -46,26 +46,34 @@ public class CustomerController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        System.out.println("checked");
         if (!req.getContentType().toLowerCase().startsWith("application/json") || req.getContentType() == null) {
+            System.out.println("checked2");
             resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
         }
 
+        System.out.println("checked3");
         Jsonb jsonb = JsonbBuilder.create();
         CustomerDTO dto = jsonb.fromJson(req.getReader(), CustomerDTO.class);
+
+        System.out.println(dto);
+        System.out.println("checked4");
 
         try (var writer = resp.getWriter()){
 
             if (dataProcess.save(dto, connection)) {
-
+                System.out.println("checked5");
                 log.info("Customer Successfully Saved!");
                 writer.write("Customer Saved!");
                 resp.setStatus(HttpServletResponse.SC_CREATED);
             } else {
+                System.out.println("checked6");
                 log.error("Customer Not Saved!");
                 writer.write("Customer Not Saved!");
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         } catch (SQLException e) {
+            System.out.println("checked7");
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             log.error(e.getMessage());
             e.printStackTrace();
@@ -138,5 +146,4 @@ public class CustomerController extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
-
 }

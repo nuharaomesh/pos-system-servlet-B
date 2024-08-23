@@ -39,3 +39,20 @@
 12:52:58.380 [http-nio-8080-exec-1] INFO  l.i.p.controller.ItemController -- Item Successfully Updated!
 12:53:58.634 [http-nio-8080-exec-5] INFO  l.i.p.controller.ItemController -- Connection Successfully created!
 12:54:21.954 [http-nio-8080-exec-8] INFO  l.i.p.controller.ItemController -- Item Successfully Deleted!
+22:09:37.033 [http-nio-8080-exec-8] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+22:10:56.722 [http-nio-8080-exec-5] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+22:19:35.531 [http-nio-8080-exec-5] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+22:47:24.926 [http-nio-8080-exec-1] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+22:54:26.990 [http-nio-8080-exec-1] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+22:57:22.447 [http-nio-8080-exec-6] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+23:00:18.999 [http-nio-8080-exec-5] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+23:01:00.014 [http-nio-8080-exec-4] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+23:01:38.434 [http-nio-8080-exec-5] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+23:04:45.285 [http-nio-8080-exec-5] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+23:06:18.397 [http-nio-8080-exec-5] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+23:08:39.760 [http-nio-8080-exec-4] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+23:17:42.045 [http-nio-8080-exec-6] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+23:18:59.797 [http-nio-8080-exec-4] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+23:19:23.000 [http-nio-8080-exec-5] INFO  l.i.p.controller.CustomerController -- Connection Successfully created!
+23:19:23.395 [http-nio-8080-exec-6] ERROR l.i.p.controller.CustomerController -- Duplicate entry 'C001' for key 'Customer.PRIMARY'
+23:20:38.505 [http-nio-8080-exec-10] INFO  l.i.p.controller.CustomerController -- Customer Successfully Saved!
