@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -105,7 +104,7 @@ public class CustomerController extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try(var writer = resp.getWriter()) {
-            if (dataProcess.delete(req.getParameter("ad"), connection)) {
+            if (dataProcess.delete(req.getParameter("id"), connection)) {
 
                 log.info("Customer Successfully Deleted!");
                 writer.write("Customer Deleted!");
