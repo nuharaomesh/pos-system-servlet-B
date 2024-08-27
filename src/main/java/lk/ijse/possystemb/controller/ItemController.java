@@ -3,13 +3,16 @@ package lk.ijse.possystemb.controller;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import lk.ijse.possystemb.dto.ItemDTO;
 import lk.ijse.possystemb.persistance.ItemData;
 import lk.ijse.possystemb.persistance.process.ItemDataProcess;
+import lk.ijse.possystemb.util.UtilProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +24,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet("/item")
+@MultipartConfig
 public class ItemController extends HttpServlet {
 
+    private UtilProcess utilProcess;
     private Connection connection;
     private ItemData dataProcess = new ItemDataProcess();
     static Logger log = LoggerFactory.getLogger(ItemController.class);
@@ -61,17 +66,28 @@ public class ItemController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        if (!req.getContentType().toLowerCase().startsWith("application/json") || req.getContentType() == null) {
+        if (!req.getContentType().toLowerCase().startsWith("multipart/form-data") || req.getContentType() == null ) {
             resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
         }
 
-        Jsonb jsonb = JsonbBuilder.create();
-        ItemDTO dto = jsonb.fromJson(req.getReader(), ItemDTO.class);
+        String itemName = req.getParameter("itemName");
+        String category = req.getParameter("category");
+        float price = Float.parseFloat(req.getParameter("price"));
+        int qty = Integer.parseInt(req.getParameter("qty"));
+        Part filePart = req.getPart("img");
+
+        String fileName = filePart.getSubmittedFileName();
+        String fileSavePath = "/home/omesh/vs code/pos-system/assets/img" + fileName;
+        filePart.write(fileSavePath);
+
+        String id = utilProcess.generateID();
+        System.out.println(id);
+
+        ItemDTO dto = new ItemDTO(id, itemName, category, price, qty, fileName);
 
         try(var writer = resp.getWriter()) {
 
             if (dataProcess.save(dto, connection)) {
-
                 log.info("Item Successfully Saved!");
                 writer.write("Item Saved!");
                 resp.setStatus(HttpServletResponse.SC_CREATED);
