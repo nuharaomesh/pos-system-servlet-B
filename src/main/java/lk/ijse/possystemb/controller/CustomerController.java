@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lk.ijse.possystemb.dto.CustomerDTO;
 import lk.ijse.possystemb.persistance.CustomerData;
 import lk.ijse.possystemb.persistance.process.CustomerDataProcess;
+import lk.ijse.possystemb.util.UtilProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ public class CustomerController extends HttpServlet {
 
     private Connection connection;
     private CustomerData dataProcess = new CustomerDataProcess();
+    private UtilProcess utilProcess;
     static Logger log = LoggerFactory.getLogger(CustomerController.class);
 
     @Override
@@ -46,34 +48,27 @@ public class CustomerController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        System.out.println("checked");
         if (!req.getContentType().toLowerCase().startsWith("application/json") || req.getContentType() == null) {
-            System.out.println("checked2");
             resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
         }
 
-        System.out.println("checked3");
         Jsonb jsonb = JsonbBuilder.create();
         CustomerDTO dto = jsonb.fromJson(req.getReader(), CustomerDTO.class);
-
+        dto.setId(utilProcess.generateID());
         System.out.println(dto);
-        System.out.println("checked4");
 
         try (var writer = resp.getWriter()){
 
             if (dataProcess.save(dto, connection)) {
-                System.out.println("checked5");
                 log.info("Customer Successfully Saved!");
                 writer.write("Customer Saved!");
                 resp.setStatus(HttpServletResponse.SC_CREATED);
             } else {
-                System.out.println("checked6");
                 log.error("Customer Not Saved!");
                 writer.write("Customer Not Saved!");
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         } catch (SQLException e) {
-            System.out.println("checked7");
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             log.error(e.getMessage());
             e.printStackTrace();
