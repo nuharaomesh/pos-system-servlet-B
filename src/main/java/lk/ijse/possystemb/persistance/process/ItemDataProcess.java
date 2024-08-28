@@ -1,9 +1,11 @@
 package lk.ijse.possystemb.persistance.process;
 
+import lk.ijse.possystemb.dto.CustomDTO;
 import lk.ijse.possystemb.dto.ItemDTO;
 import lk.ijse.possystemb.persistance.ItemData;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,7 +16,8 @@ public class ItemDataProcess implements ItemData {
     static String GET_ALL_ITEMS = "SELECT * FROM Item";
     static String SAVE_ITEM = "INSERT INTO Item (id, itemName, category, price, qty, img) VALUES (?, ?, ?, ?, ?, ?)";
     static String UPDATE_ITEM = "UPDATE Item SET itemName = ?, category = ?, price = ?, qty = ?, img = ? WHERE id = ?";
-    static  String DELETE_ITEM = "DELETE FROM Item WHERE id = ?";
+    static String DELETE_ITEM = "DELETE FROM Item WHERE id = ?";
+    static String UPDATE_ITEM_QTY = "UPDATE Item SET qty = ? WHERE id = ?";
 
     @Override
     public List<ItemDTO> getAll(Connection connection) throws SQLException {
@@ -74,5 +77,25 @@ public class ItemDataProcess implements ItemData {
         var ps = connection.prepareStatement(DELETE_ITEM);
         ps.setString(1, id);
         return ps.executeUpdate() > 0;
+    }
+
+    @Override
+    public boolean updateItemQty(List<CustomDTO> dtoList, Connection connection) throws SQLException {
+
+        var ps = connection.prepareStatement(UPDATE_ITEM_QTY);
+        boolean isSuccess = true;
+
+        for (CustomDTO dto : dtoList) {
+            ps.setInt(1, dto.getQty());
+            ps.setString(2, dto.getId());
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows == 0) {
+                isSuccess = false;
+                break;
+            }
+        }
+        return isSuccess;
     }
 }

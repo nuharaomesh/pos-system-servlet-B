@@ -54,6 +54,7 @@ public class CustomerController extends HttpServlet {
 
         Jsonb jsonb = JsonbBuilder.create();
         CustomerDTO dto = jsonb.fromJson(req.getReader(), CustomerDTO.class);
+
         dto.setId(utilProcess.generateID());
         System.out.println(dto);
 

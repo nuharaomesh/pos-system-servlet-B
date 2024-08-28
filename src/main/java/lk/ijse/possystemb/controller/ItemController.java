@@ -52,6 +52,7 @@ public class ItemController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try(var writer = resp.getWriter()) {
+
             List<ItemDTO> dtoList = dataProcess.getAll(connection);
 
             Jsonb jsonb = JsonbBuilder.create();
@@ -77,17 +78,17 @@ public class ItemController extends HttpServlet {
         Part filePart = req.getPart("img");
 
         String fileName = filePart.getSubmittedFileName();
-        String fileSavePath = "/home/omesh/vs code/pos-system/assets/img" + fileName;
-        filePart.write(fileSavePath);
 
         String id = utilProcess.generateID();
-        System.out.println(id);
 
         ItemDTO dto = new ItemDTO(id, itemName, category, price, qty, fileName);
 
         try(var writer = resp.getWriter()) {
 
             if (dataProcess.save(dto, connection)) {
+                String fileSavePath = "/home/omesh/vs code/pos-system/assets/img/" + fileName;
+                filePart.write(fileSavePath);
+
                 log.info("Item Successfully Saved!");
                 writer.write("Item Saved!");
                 resp.setStatus(HttpServletResponse.SC_CREATED);
@@ -105,16 +106,26 @@ public class ItemController extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        if (req.getContentType().toLowerCase().startsWith("application/json") || req.getContentType() == null) {
-            resp.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+        if (!req.getContentType().toLowerCase().startsWith("multipart/form-data") || req.getContentType() == null ) {
+            resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
         }
 
-        Jsonb jsonb = JsonbBuilder.create();
-        ItemDTO dto = jsonb.fromJson(req.getReader(), ItemDTO.class);
+        String id = req.getParameter("id");
+        String itemName = req.getParameter("itemName");
+        String category = req.getParameter("category");
+        float price = Float.parseFloat(req.getParameter("price"));
+        int qty = Integer.parseInt(req.getParameter("qty"));
+        Part filePart = req.getPart("img");
+
+        String fileName = filePart.getSubmittedFileName();
+
+        ItemDTO dto = new ItemDTO(id, itemName, category, price, qty, fileName);
 
         try(var writer = resp.getWriter()) {
 
             if (dataProcess.update(dto, connection)) {
+                String fileSavePath = "/home/omesh/vs code/pos-system/assets/img/" + fileName;
+                filePart.write(fileSavePath);
 
                 log.info("Item Successfully Updated!");
                 writer.write("Item Updated!");
