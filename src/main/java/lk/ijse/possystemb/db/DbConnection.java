@@ -18,7 +18,7 @@ public class DbConnection {
 
         try {
             var ctx = new InitialContext();
-            DataSource pool = (DataSource) ctx.lookup("java:/comp/env/jdbc/posSystem");
+            DataSource pool = (DataSource) ctx.lookup("java:/comp/env/jdbc/posSys");
             pool.getConnection();
 
             this.connection = pool.getConnection();
