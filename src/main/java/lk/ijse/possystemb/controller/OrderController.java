@@ -78,43 +78,15 @@ public class OrderController extends HttpServlet {
         List<OrderDetailDTO> orderDetails = jsonb.fromJson(orderDetailsJson, new ArrayList<OrderDetailDTO>(){}.getClass().getGenericSuperclass());
         orderDetails.forEach(System.out::println);
 
-        if (orderBO.saveOrder(customDTOS, order, orderDetails)) {
-            return;
+        if (!orderBO.saveOrder(customDTOS, order, orderDetails)) {
+            log.error("Item Not Saved!");
+            resp.getWriter().write("Item Not Saved!");
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-//        try {
-//
-//            connection.setAutoCommit(false);
-//
-//            if (!itemProcess.updateItemQty(customDTOS, connection)) {
-//                System.out.println("1");
-//                connection.rollback();
-//                connection.setAutoCommit(true);
-//                return;
-//            }
-//
-//            if(!orderProcess.save(order, connection)) {
-//                System.out.println("2");
-//                connection.rollback();
-//                connection.setAutoCommit(true);
-//                return;
-//            }
-//
-//            if(!orderDetailProcess.save(orderDetails, connection)) {
-//                System.out.println("3");
-//                connection.rollback();
-//                connection.setAutoCommit(true);
-//                return;
-//            }
-//
-//            connection.commit();
-//            System.out.println("Wade hari");
-//            connection.setAutoCommit(true);
-//
-//        } catch (SQLException e) {
-//            connection.setAutoCommit(true);
-//            e.printStackTrace();
-//        }
 
+        log.info("Item Successfully Saved!");
+        resp.getWriter().write("Item Saved!");
+        resp.setStatus(HttpServletResponse.SC_CREATED);
     }
 
     @Override
