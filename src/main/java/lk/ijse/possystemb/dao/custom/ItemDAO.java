@@ -1,5 +1,6 @@
-package lk.ijse.possystemb.persistance;
+package lk.ijse.possystemb.dao.custom;
 
+import lk.ijse.possystemb.dao.SuperDAO;
 import lk.ijse.possystemb.dto.CustomDTO;
 import lk.ijse.possystemb.dto.ItemDTO;
 
@@ -7,7 +8,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface ItemData {
+public interface ItemDAO extends SuperDAO {
     List<ItemDTO> getAll(Connection connection) throws SQLException;
     boolean save(ItemDTO dto, Connection connection) throws SQLException;
     boolean update(ItemDTO dto, Connection connection) throws SQLException;

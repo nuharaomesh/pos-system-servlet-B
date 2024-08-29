@@ -1,17 +1,16 @@
-package lk.ijse.possystemb.persistance.process;
+package lk.ijse.possystemb.dao.custom.impl;
 
 import lk.ijse.possystemb.dto.CustomDTO;
 import lk.ijse.possystemb.dto.ItemDTO;
-import lk.ijse.possystemb.persistance.ItemData;
+import lk.ijse.possystemb.dao.custom.ItemDAO;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemDataProcess implements ItemData {
+public class ItemDAOImpl implements ItemDAO {
 
     static String GET_ALL_ITEMS = "SELECT * FROM Item";
     static String SAVE_ITEM = "INSERT INTO Item (id, itemName, category, price, qty, img) VALUES (?, ?, ?, ?, ?, ?)";

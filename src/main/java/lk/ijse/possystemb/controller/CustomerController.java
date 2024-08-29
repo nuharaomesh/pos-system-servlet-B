@@ -8,8 +8,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lk.ijse.possystemb.dto.CustomerDTO;
-import lk.ijse.possystemb.persistance.CustomerData;
-import lk.ijse.possystemb.persistance.process.CustomerDataProcess;
+import lk.ijse.possystemb.dao.custom.CustomerDAO;
+import lk.ijse.possystemb.dao.custom.impl.CustomerDAOImpl;
 import lk.ijse.possystemb.util.UtilProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ import java.util.List;
 public class CustomerController extends HttpServlet {
 
     private Connection connection;
-    private CustomerData dataProcess = new CustomerDataProcess();
+    private CustomerDAO dataProcess = new CustomerDAOImpl();
     private UtilProcess utilProcess;
     static Logger log = LoggerFactory.getLogger(CustomerController.class);
 

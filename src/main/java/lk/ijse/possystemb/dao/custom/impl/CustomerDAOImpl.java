@@ -1,7 +1,7 @@
-package lk.ijse.possystemb.persistance.process;
+package lk.ijse.possystemb.dao.custom.impl;
 
 import lk.ijse.possystemb.dto.CustomerDTO;
-import lk.ijse.possystemb.persistance.CustomerData;
+import lk.ijse.possystemb.dao.custom.CustomerDAO;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerDataProcess implements CustomerData {
+public class CustomerDAOImpl implements CustomerDAO {
 
     static String GET_ALL_CUSTOMERS = "SELECT id,name,gender,gmail,phoneNo FROM Customer";
     static String SAVE_CUSTOMER = "INSERT INTO Customer (id, name, gender, gmail, phoneNo) VALUES(?, ?, ?, ?, ?)";

@@ -1,12 +1,13 @@
-package lk.ijse.possystemb.persistance;
+package lk.ijse.possystemb.dao.custom;
 
+import lk.ijse.possystemb.dao.SuperDAO;
 import lk.ijse.possystemb.dto.CustomerDTO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface CustomerData {
+public interface CustomerDAO extends SuperDAO {
 
     List<CustomerDTO> getAll(Connection connection) throws SQLException;
     boolean save(CustomerDTO dto, Connection connection) throws SQLException;

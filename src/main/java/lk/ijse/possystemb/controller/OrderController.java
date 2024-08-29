@@ -1,10 +1,7 @@
 package lk.ijse.possystemb.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
-import jakarta.json.bind.JsonbConfig;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,17 +9,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lk.ijse.possystemb.dto.CustomDTO;
-import lk.ijse.possystemb.dto.CustomerDTO;
 import lk.ijse.possystemb.dto.OrderDTO;
 import lk.ijse.possystemb.dto.OrderDetailDTO;
-import lk.ijse.possystemb.persistance.CustomerData;
-import lk.ijse.possystemb.persistance.ItemData;
-import lk.ijse.possystemb.persistance.OrderData;
-import lk.ijse.possystemb.persistance.OrderDetailsData;
-import lk.ijse.possystemb.persistance.process.CustomerDataProcess;
-import lk.ijse.possystemb.persistance.process.ItemDataProcess;
-import lk.ijse.possystemb.persistance.process.OrderDataProcess;
-import lk.ijse.possystemb.persistance.process.OrderDetailsDataProcess;
+import lk.ijse.possystemb.dao.custom.ItemDAO;
+import lk.ijse.possystemb.dao.custom.OrderDAO;
+import lk.ijse.possystemb.dao.custom.OrderDetailsDAO;
+import lk.ijse.possystemb.dao.custom.impl.ItemDAOImpl;
+import lk.ijse.possystemb.dao.custom.impl.OrderDAOImpl;
+import lk.ijse.possystemb.dao.custom.impl.OrderDetailsDAOImpl;
 import lk.ijse.possystemb.util.UtilProcess;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
@@ -30,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -41,9 +34,9 @@ import java.util.List;
 public class OrderController extends HttpServlet {
 
     private Connection connection;
-    private ItemData itemProcess = new ItemDataProcess();
-    private OrderData orderProcess = new OrderDataProcess();
-    private OrderDetailsData orderDetailProcess = new OrderDetailsDataProcess();
+    private ItemDAO itemProcess = new ItemDAOImpl();
+    private OrderDAO orderProcess = new OrderDAOImpl();
+    private OrderDetailsDAO orderDetailProcess = new OrderDetailsDAOImpl();
     private UtilProcess utilProcess;
     static Logger log = LoggerFactory.getLogger(CustomerController.class);
     private OrderDTO orderDTO = new OrderDTO();

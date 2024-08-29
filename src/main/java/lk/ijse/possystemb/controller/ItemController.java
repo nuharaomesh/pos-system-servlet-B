@@ -10,8 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import lk.ijse.possystemb.dto.ItemDTO;
-import lk.ijse.possystemb.persistance.ItemData;
-import lk.ijse.possystemb.persistance.process.ItemDataProcess;
+import lk.ijse.possystemb.dao.custom.ItemDAO;
+import lk.ijse.possystemb.dao.custom.impl.ItemDAOImpl;
 import lk.ijse.possystemb.util.UtilProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class ItemController extends HttpServlet {
 
     private UtilProcess utilProcess;
     private Connection connection;
-    private ItemData dataProcess = new ItemDataProcess();
+    private ItemDAO dataProcess = new ItemDAOImpl();
     static Logger log = LoggerFactory.getLogger(ItemController.class);
 
     @Override

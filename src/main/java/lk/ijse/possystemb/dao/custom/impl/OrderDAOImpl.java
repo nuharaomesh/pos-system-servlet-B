@@ -1,12 +1,12 @@
-package lk.ijse.possystemb.persistance.process;
+package lk.ijse.possystemb.dao.custom.impl;
 
 import lk.ijse.possystemb.dto.OrderDTO;
-import lk.ijse.possystemb.persistance.OrderData;
+import lk.ijse.possystemb.dao.custom.OrderDAO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class OrderDataProcess implements OrderData {
+public class OrderDAOImpl implements OrderDAO {
 
     static String SAVE_ORDER = "INSERT INTO Orders (id, price, time, qty, cusID) VALUES (?, ?, ?, ?, ?)";
 
