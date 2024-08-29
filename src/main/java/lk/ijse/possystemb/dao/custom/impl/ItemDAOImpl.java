@@ -4,6 +4,7 @@ import lk.ijse.possystemb.dao.SQLUtil;
 import lk.ijse.possystemb.dto.CustomDTO;
 import lk.ijse.possystemb.dto.ItemDTO;
 import lk.ijse.possystemb.dao.custom.ItemDAO;
+import lk.ijse.possystemb.entity.Custom;
 import lk.ijse.possystemb.entity.Customer;
 import lk.ijse.possystemb.entity.Item;
 
@@ -50,19 +51,14 @@ public class ItemDAOImpl implements ItemDAO {
     }
 
     @Override
-    public boolean updateItemQty(List<Item> dtoList, Connection connection) throws SQLException, ClassNotFoundException {
+    public boolean updateItemQty(List<Custom> entityList) throws SQLException, ClassNotFoundException {
         String sql = "UPDATE Item SET qty = ? WHERE id = ?";
 
         boolean isSuccess = true;
 
-        for (Item entity : dtoList) {
+        for (Custom entity : entityList) {
 
-            int affectedRows = SQLUtil.execute(sql, entity.getQty(), entity.getId());
-
-            if (affectedRows == 0) {
-                isSuccess = false;
-                break;
-            }
+            isSuccess = SQLUtil.execute(sql, entity.getQty(), entity.getId());
         }
         return isSuccess;
     }

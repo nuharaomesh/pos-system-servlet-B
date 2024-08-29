@@ -1,27 +1,33 @@
 package lk.ijse.possystemb.dao.custom.impl;
 
+import lk.ijse.possystemb.dao.SQLUtil;
 import lk.ijse.possystemb.dto.OrderDTO;
 import lk.ijse.possystemb.dao.custom.OrderDAO;
+import lk.ijse.possystemb.entity.Order;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 public class OrderDAOImpl implements OrderDAO {
-
-    static String SAVE_ORDER = "INSERT INTO Orders (id, price, time, qty, cusID) VALUES (?, ?, ?, ?, ?)";
+    @Override
+    public List<Order> get() {
+        return List.of();
+    }
 
     @Override
-    public boolean save(OrderDTO dto, Connection connection) throws SQLException {
+    public boolean save(Order entity) throws SQLException, ClassNotFoundException {
+        String sql = "INSERT INTO Orders (id, price, time, qty, cusID) VALUES (?, ?, ?, ?, ?)";
+        return SQLUtil.execute(sql, entity.getId(), entity.getPrice(), entity.getTime(), entity.getQty(), entity.getCusID());
+    }
 
-        var ps = connection.prepareStatement(SAVE_ORDER);
+    @Override
+    public boolean update(Order entity) {
+        return false;
+    }
 
-        ps.setString(1, dto.getId());
-        ps.setFloat(2, dto.getPrice());
-        ps.setString(3, dto.getTime());
-        ps.setInt(4, dto.getQty());
-        ps.setString(5, dto.getCusID());
-
-        System.out.println("DTO: "+dto);
-        return ps.executeUpdate() > 0;
+    @Override
+    public boolean delete(String id) {
+        return false;
     }
 }

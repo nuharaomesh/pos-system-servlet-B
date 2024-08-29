@@ -1,35 +1,44 @@
 package lk.ijse.possystemb.dao.custom.impl;
 
+import lk.ijse.possystemb.dao.SQLUtil;
 import lk.ijse.possystemb.dto.OrderDetailDTO;
 import lk.ijse.possystemb.dao.custom.OrderDetailsDAO;
+import lk.ijse.possystemb.entity.OrderDetail;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 public class OrderDetailsDAOImpl implements OrderDetailsDAO {
-
-    static String SAVE_ORDER_DETAILS = "INSERT INTO OrderDetails (orderID, itemID, price, counts) VALUES (?, ?, ?, ?)";
+    @Override
+    public List<OrderDetail> get() {
+        return List.of();
+    }
 
     @Override
-    public boolean save(List<OrderDetailDTO> dtoList, Connection connection) throws SQLException {
+    public boolean save(OrderDetail entity) throws SQLException, ClassNotFoundException {
+        return false;
+    }
 
-        var ps = connection.prepareStatement(SAVE_ORDER_DETAILS);
+    @Override
+    public boolean update(OrderDetail entity) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(String id) {
+        return false;
+    }
+
+    @Override
+    public boolean saveOrderDetails(List<OrderDetail> entityList) throws SQLException, ClassNotFoundException {
+        String sql = "INSERT INTO OrderDetails (orderID, itemID, price, counts) VALUES (?, ?, ?, ?)";
+
         boolean isSuccess = true;
 
-        for (OrderDetailDTO dto : dtoList) {
+        for (OrderDetail entity : entityList) {
 
-            ps.setString(1, dto.getOrderID());
-            ps.setString(2, dto.getItemID());
-            ps.setFloat(3, dto.getPrice());
-            ps.setInt(4, dto.getCount());
-
-            int affectedRows = ps.executeUpdate();
-
-            if (affectedRows == 0) {
-                isSuccess = false;
-                break;
-            }
+            isSuccess = SQLUtil.execute(sql, entity.getOrderID(), entity.getItemID(), entity.getPrice(), entity.getCount());
         }
         return isSuccess;
     }

@@ -8,6 +8,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lk.ijse.possystemb.bo.BOFactory;
+import lk.ijse.possystemb.bo.custom.OrderBO;
 import lk.ijse.possystemb.dto.CustomDTO;
 import lk.ijse.possystemb.dto.OrderDTO;
 import lk.ijse.possystemb.dto.OrderDetailDTO;
@@ -33,30 +35,9 @@ import java.util.List;
 @WebServlet("/order")
 public class OrderController extends HttpServlet {
 
-    private Connection connection;
-    private ItemDAO itemProcess = new ItemDAOImpl();
-    private OrderDAO orderProcess = new OrderDAOImpl();
-    private OrderDetailsDAO orderDetailProcess = new OrderDetailsDAOImpl();
     private UtilProcess utilProcess;
+    private OrderBO orderBO = (OrderBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.ORDER);
     static Logger log = LoggerFactory.getLogger(CustomerController.class);
-    private OrderDTO orderDTO = new OrderDTO();
-    private OrderDetailDTO orderDetailDTO = new OrderDetailDTO();
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-
-        try {
-
-            var ctx = new InitialContext();
-            DataSource pool = (DataSource) ctx.lookup("java:comp/env/jdbc/posSys");
-            this.connection = pool.getConnection();
-            log.info("Connection Successfully created!");
-        } catch (Exception e) {
-
-            log.error(e.getMessage());
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -97,39 +78,42 @@ public class OrderController extends HttpServlet {
         List<OrderDetailDTO> orderDetails = jsonb.fromJson(orderDetailsJson, new ArrayList<OrderDetailDTO>(){}.getClass().getGenericSuperclass());
         orderDetails.forEach(System.out::println);
 
-        try {
-
-            connection.setAutoCommit(false);
-
-            if (!itemProcess.updateItemQty(customDTOS, connection)) {
-                System.out.println("1");
-                connection.rollback();
-                connection.setAutoCommit(true);
-                return;
-            }
-
-            if(!orderProcess.save(order, connection)) {
-                System.out.println("2");
-                connection.rollback();
-                connection.setAutoCommit(true);
-                return;
-            }
-
-            if(!orderDetailProcess.save(orderDetails, connection)) {
-                System.out.println("3");
-                connection.rollback();
-                connection.setAutoCommit(true);
-                return;
-            }
-
-            connection.commit();
-            System.out.println("Wade hari");
-            connection.setAutoCommit(true);
-
-        } catch (SQLException e) {
-            connection.setAutoCommit(true);
-            e.printStackTrace();
+        if (orderBO.saveOrder(customDTOS, order, orderDetails)) {
+            return;
         }
+//        try {
+//
+//            connection.setAutoCommit(false);
+//
+//            if (!itemProcess.updateItemQty(customDTOS, connection)) {
+//                System.out.println("1");
+//                connection.rollback();
+//                connection.setAutoCommit(true);
+//                return;
+//            }
+//
+//            if(!orderProcess.save(order, connection)) {
+//                System.out.println("2");
+//                connection.rollback();
+//                connection.setAutoCommit(true);
+//                return;
+//            }
+//
+//            if(!orderDetailProcess.save(orderDetails, connection)) {
+//                System.out.println("3");
+//                connection.rollback();
+//                connection.setAutoCommit(true);
+//                return;
+//            }
+//
+//            connection.commit();
+//            System.out.println("Wade hari");
+//            connection.setAutoCommit(true);
+//
+//        } catch (SQLException e) {
+//            connection.setAutoCommit(true);
+//            e.printStackTrace();
+//        }
 
     }
 
