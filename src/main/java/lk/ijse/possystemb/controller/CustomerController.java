@@ -7,6 +7,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lk.ijse.possystemb.bo.BOFactory;
+import lk.ijse.possystemb.bo.custom.CustomerBO;
 import lk.ijse.possystemb.dto.CustomerDTO;
 import lk.ijse.possystemb.dao.custom.CustomerDAO;
 import lk.ijse.possystemb.dao.custom.impl.CustomerDAOImpl;
@@ -24,26 +26,9 @@ import java.util.List;
 @WebServlet(urlPatterns = "/customer")
 public class CustomerController extends HttpServlet {
 
-    private Connection connection;
-    private CustomerDAO dataProcess = new CustomerDAOImpl();
     private UtilProcess utilProcess;
+    private CustomerBO customerBO = (CustomerBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.CUSTOMER);
     static Logger log = LoggerFactory.getLogger(CustomerController.class);
-
-    @Override
-    public void init() throws ServletException {
-
-        try {
-
-            var ctx = new InitialContext();
-            DataSource pool = (DataSource) ctx.lookup("java:comp/env/jdbc/posSys");
-            this.connection = pool.getConnection();
-            log.info("Connection Successfully created!");
-        } catch (Exception e) {
-
-            log.error(e.getMessage());
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -56,11 +41,10 @@ public class CustomerController extends HttpServlet {
         CustomerDTO dto = jsonb.fromJson(req.getReader(), CustomerDTO.class);
 
         dto.setId(utilProcess.generateID());
-        System.out.println(dto);
 
         try (var writer = resp.getWriter()){
 
-            if (dataProcess.save(dto, connection)) {
+            if (customerBO.saveCustomer(dto)) {
                 log.info("Customer Successfully Saved!");
                 writer.write("Customer Saved!");
                 resp.setStatus(HttpServletResponse.SC_CREATED);
@@ -69,7 +53,7 @@ public class CustomerController extends HttpServlet {
                 writer.write("Customer Not Saved!");
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             log.error(e.getMessage());
             e.printStackTrace();
@@ -88,7 +72,7 @@ public class CustomerController extends HttpServlet {
 
         try(var writer = resp.getWriter()) {
 
-            if (dataProcess.update(dto, connection)) {
+            if (customerBO.updateCustomer(dto)) {
 
                 log.info("Customer Successfully Updated!");
                 writer.write("Customer Updated!");
@@ -98,7 +82,7 @@ public class CustomerController extends HttpServlet {
                 writer.write("Customer Not Updated!");
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             log.error(e.getMessage());
             e.printStackTrace();
         }
@@ -108,7 +92,7 @@ public class CustomerController extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try(var writer = resp.getWriter()) {
-            if (dataProcess.delete(req.getParameter("id"), connection)) {
+            if (customerBO.deleteCustomer(req.getParameter("id"))) {
 
                 log.info("Customer Successfully Deleted!");
                 writer.write("Customer Deleted!");
@@ -118,7 +102,7 @@ public class CustomerController extends HttpServlet {
                 writer.write("Customer Not Deleted!");
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             log.error(e.getMessage());
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
@@ -130,14 +114,14 @@ public class CustomerController extends HttpServlet {
 
         try(var writer = resp.getWriter()) {
 
-            List<CustomerDTO> dtoList = dataProcess.getAll(connection);
+            List<CustomerDTO> dtoList = customerBO.getAll();
 
             Jsonb jsonb = JsonbBuilder.create();
             String customers = jsonb.toJson(dtoList);
 
             writer.write(customers);
             log.info("Rendering All Customers");
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             log.error(e.getMessage());
             throw new RuntimeException(e);
         }
