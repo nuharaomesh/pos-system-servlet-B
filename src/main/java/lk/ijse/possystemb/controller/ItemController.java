@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import lk.ijse.possystemb.bo.BOFactory;
+import lk.ijse.possystemb.bo.custom.ItemBO;
 import lk.ijse.possystemb.dto.ItemDTO;
 import lk.ijse.possystemb.dao.custom.ItemDAO;
 import lk.ijse.possystemb.dao.custom.impl.ItemDAOImpl;
@@ -28,38 +30,21 @@ import java.util.List;
 public class ItemController extends HttpServlet {
 
     private UtilProcess utilProcess;
-    private Connection connection;
-    private ItemDAO dataProcess = new ItemDAOImpl();
+    private ItemBO itemBO = (ItemBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.ITEM);
     static Logger log = LoggerFactory.getLogger(ItemController.class);
-
-    @Override
-    public void init() throws ServletException {
-
-        try {
-
-            var ctx = new InitialContext();
-            DataSource pool = (DataSource) ctx.lookup("java:comp/env/jdbc/posSys");
-            this.connection = pool.getConnection();
-            log.info("Connection Successfully created!");
-        } catch (Exception e) {
-
-            log.error(e.getMessage());
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try(var writer = resp.getWriter()) {
 
-            List<ItemDTO> dtoList = dataProcess.getAll(connection);
+            List<ItemDTO> dtoList = itemBO.getAll();
 
             Jsonb jsonb = JsonbBuilder.create();
             String items = jsonb.toJson(dtoList);
 
             writer.write(items);
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
@@ -85,7 +70,7 @@ public class ItemController extends HttpServlet {
 
         try(var writer = resp.getWriter()) {
 
-            if (dataProcess.save(dto, connection)) {
+            if (itemBO.saveItem(dto)) {
                 String fileSavePath = "/home/omesh/vs code/pos-system/assets/img/" + fileName;
                 filePart.write(fileSavePath);
 
@@ -97,7 +82,7 @@ public class ItemController extends HttpServlet {
                 writer.write("Item Not Saved!");
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             log.error(e.getMessage());
             e.printStackTrace();
         }
@@ -123,7 +108,7 @@ public class ItemController extends HttpServlet {
 
         try(var writer = resp.getWriter()) {
 
-            if (dataProcess.update(dto, connection)) {
+            if (itemBO.updateItem(dto)) {
                 String fileSavePath = "/home/omesh/vs code/pos-system/assets/img/" + fileName;
                 filePart.write(fileSavePath);
 
@@ -135,7 +120,7 @@ public class ItemController extends HttpServlet {
                 writer.write("Item Not Updated!");
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             log.error(e.getMessage());
             e.printStackTrace();
         }
@@ -145,7 +130,7 @@ public class ItemController extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try(var writer = resp.getWriter()) {
-            if (dataProcess.delete(req.getParameter("id"), connection)) {
+            if (itemBO.deleteItem(req.getParameter("id"))) {
 
                 log.info("Item Successfully Deleted!");
                 writer.write("Item Deleted!");
@@ -155,7 +140,7 @@ public class ItemController extends HttpServlet {
                 writer.write("Item Not Deleted!");
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             log.error(e.getMessage());
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();

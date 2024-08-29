@@ -1,8 +1,11 @@
 package lk.ijse.possystemb.dao.custom.impl;
 
+import lk.ijse.possystemb.dao.SQLUtil;
 import lk.ijse.possystemb.dto.CustomDTO;
 import lk.ijse.possystemb.dto.ItemDTO;
 import lk.ijse.possystemb.dao.custom.ItemDAO;
+import lk.ijse.possystemb.entity.Customer;
+import lk.ijse.possystemb.entity.Item;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -12,83 +15,49 @@ import java.util.List;
 
 public class ItemDAOImpl implements ItemDAO {
 
-    static String GET_ALL_ITEMS = "SELECT * FROM Item";
-    static String SAVE_ITEM = "INSERT INTO Item (id, itemName, category, price, qty, img) VALUES (?, ?, ?, ?, ?, ?)";
-    static String UPDATE_ITEM = "UPDATE Item SET itemName = ?, category = ?, price = ?, qty = ?, img = ? WHERE id = ?";
-    static String DELETE_ITEM = "DELETE FROM Item WHERE id = ?";
-    static String UPDATE_ITEM_QTY = "UPDATE Item SET qty = ? WHERE id = ?";
-
     @Override
-    public List<ItemDTO> getAll(Connection connection) throws SQLException {
+    public List<Item> get() throws SQLException, ClassNotFoundException {
+        String sql = "SELECT * FROM Item";
+        ResultSet resultSet = SQLUtil.execute(sql);
 
-        var item = connection.prepareStatement(GET_ALL_ITEMS);
-        ResultSet resultSet = item.executeQuery();
-        List<ItemDTO> itemDTOList = new ArrayList<>();
+        List<Item> entityList = new ArrayList<>();
 
         while (resultSet.next()) {
-            ItemDTO dto = new ItemDTO();
-            dto.setId(resultSet.getString("id"));
-            dto.setItemName(resultSet.getString("itemName"));
-            dto.setCategory(resultSet.getString("category"));
-            dto.setPrice(resultSet.getFloat("price"));
-            dto.setQty(resultSet.getInt("qty"));
-            dto.setImg(resultSet.getString("img"));
+            Item entity = new Item();
+            entity.setId(resultSet.getString("id"));
+            entity.setItemName(resultSet.getString("itemName"));
+            entity.setCategory(resultSet.getString("category"));
+            entity.setPrice(resultSet.getFloat("price"));
+            entity.setQty(resultSet.getInt("qty"));
+            entity.setImg(resultSet.getString("img"));
 
-            itemDTOList.add(dto);
+            entityList.add(entity);
         }
 
-        return itemDTOList;
+        return entityList;
     }
 
     @Override
-    public boolean save(ItemDTO dto, Connection connection) throws SQLException {
-
-        var ps = connection.prepareStatement(SAVE_ITEM);
-
-        ps.setString(1, dto.getId());
-        ps.setString(2, dto.getItemName());
-        ps.setString(3, dto.getCategory());
-        ps.setFloat(4, dto.getPrice());
-        ps.setInt(5, dto.getQty());
-        ps.setString(6, dto.getImg());
-
-        return ps.executeUpdate() > 0;
+    public boolean save(Item entity) throws SQLException, ClassNotFoundException {
+        String sql = "INSERT INTO Item (id, itemName, category, price, qty, img) VALUES (?, ?, ?, ?, ?, ?)";
+        return SQLUtil.execute(sql, entity.getId(), entity.getItemName(), entity.getCategory(), entity.getPrice(), entity.getQty(), entity.getImg());
     }
 
     @Override
-    public boolean update(ItemDTO dto, Connection connection) throws SQLException {
-
-        var ps = connection.prepareStatement(UPDATE_ITEM);
-
-        ps.setString(1, dto.getItemName());
-        ps.setString(2, dto.getCategory());
-        ps.setFloat(3, dto.getPrice());
-        ps.setInt(4, dto.getQty());
-        ps.setString(5, dto.getImg());
-        ps.setString(6, dto.getId());
-
-        return ps.executeUpdate() > 0;
+    public boolean update(Item entity) throws SQLException, ClassNotFoundException {
+        String sql = "UPDATE Item SET itemName = ?, category = ?, price = ?, qty = ?, img = ? WHERE id = ?";
+        return SQLUtil.execute(sql, entity.getItemName(), entity.getCategory(), entity.getPrice(), entity.getQty(), entity.getImg(), entity.getId());
     }
 
     @Override
-    public boolean delete(String id, Connection connection) throws SQLException {
+    public boolean updateItemQty(List<Item> dtoList, Connection connection) throws SQLException, ClassNotFoundException {
+        String sql = "UPDATE Item SET qty = ? WHERE id = ?";
 
-        var ps = connection.prepareStatement(DELETE_ITEM);
-        ps.setString(1, id);
-        return ps.executeUpdate() > 0;
-    }
-
-    @Override
-    public boolean updateItemQty(List<CustomDTO> dtoList, Connection connection) throws SQLException {
-
-        var ps = connection.prepareStatement(UPDATE_ITEM_QTY);
         boolean isSuccess = true;
 
-        for (CustomDTO dto : dtoList) {
-            ps.setInt(1, dto.getQty());
-            ps.setString(2, dto.getId());
+        for (Item entity : dtoList) {
 
-            int affectedRows = ps.executeUpdate();
+            int affectedRows = SQLUtil.execute(sql, entity.getQty(), entity.getId());
 
             if (affectedRows == 0) {
                 isSuccess = false;
@@ -96,5 +65,11 @@ public class ItemDAOImpl implements ItemDAO {
             }
         }
         return isSuccess;
+    }
+
+    @Override
+    public boolean delete(String id) throws SQLException, ClassNotFoundException {
+        String sql = "DELETE FROM Item WHERE id = ?";
+        return SQLUtil.execute(sql, id);
     }
 }
