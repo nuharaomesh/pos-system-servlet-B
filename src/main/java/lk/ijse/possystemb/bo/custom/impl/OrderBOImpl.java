@@ -28,31 +28,24 @@ public class OrderBOImpl implements OrderBO {
     @Override
     public boolean saveOrder(List<CustomDTO> customDTOS, OrderDTO dto, List<OrderDetailDTO> orderDetails) throws SQLException, ClassNotFoundException {
 
-        System.out.println("Awa1");
         Connection connection = DbConnection.getDbConnection().getConnection();
         connection.setAutoCommit(false);
 
-        System.out.println("Awa2");
-
         if (!itemDAO.updateItemQty(getItemEntityList(customDTOS))) {
-            System.out.println("Awa3");
             connection.rollback();
             connection.setAutoCommit(true);
         }
 
         if (!orderDAO.save(new Order(dto.getId(), dto.getPrice(), dto.getTime(), dto.getQty(), dto.getCusID()))) {
-            System.out.println("Awa4");
             connection.rollback();
             connection.setAutoCommit(true);
         }
 
         if (!orderDetailsDAO.saveOrderDetails(getOdDetailsEntities(orderDetails))) {
-            System.out.println("Awa5");
             connection.rollback();
             connection.setAutoCommit(true);
         }
 
-        System.out.println("Awa6");
         connection.commit();
         connection.setAutoCommit(true);
         return true;

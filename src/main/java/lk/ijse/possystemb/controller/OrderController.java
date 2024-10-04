@@ -13,22 +13,12 @@ import lk.ijse.possystemb.bo.custom.OrderBO;
 import lk.ijse.possystemb.dto.CustomDTO;
 import lk.ijse.possystemb.dto.OrderDTO;
 import lk.ijse.possystemb.dto.OrderDetailDTO;
-import lk.ijse.possystemb.dao.custom.ItemDAO;
-import lk.ijse.possystemb.dao.custom.OrderDAO;
-import lk.ijse.possystemb.dao.custom.OrderDetailsDAO;
-import lk.ijse.possystemb.dao.custom.impl.ItemDAOImpl;
-import lk.ijse.possystemb.dao.custom.impl.OrderDAOImpl;
-import lk.ijse.possystemb.dao.custom.impl.OrderDetailsDAOImpl;
 import lk.ijse.possystemb.util.UtilProcess;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
